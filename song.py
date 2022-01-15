@@ -13,21 +13,20 @@ with urllib.request.urlopen(req) as response:
 # 数据转存
 jdata = json.loads(data)
 song_data = {
-    "artists": {
-        "Vocalist": {},
-        "Producer": {},
-        "Animator": {},
-        "Label": {},
-        "Circle": {},
-        "Other": {},
-        "Band": {},
-        "Illustrator": {},
-        "Subject": {},
-    }
+    "artists": {}
 }
 song_data["title"] = jdata["defaultName"]
 for artist in jdata["artists"]:
-    song_data["artists"][artist["categories"]][artist["effectiveRoles"]] = artist["name"]
+    categories =  artist["categories"].split(", ")
+    roles = artist["effectiveRoles"].split(", ")
+    name = artist["name"]
+    for category in categories:
+        if  category not in song_data["artists"]:
+            song_data["artists"][category] = dict()
+        for role in roles:
+            if role not in song_data["artists"][category]:
+                song_data["artists"][category][role] = []
+            song_data["artists"][category][role] = artist["name"]
 print(song_data)
 # 确认数据
 # song_title = input(f"请输入歌曲标题[{song_title}]：") or song_title
